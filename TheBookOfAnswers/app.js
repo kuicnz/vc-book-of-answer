@@ -1,502 +1,495 @@
-/**
- * 答案之书 | The Book of Answers | 答えの書
- */
+/* The Book of Answers — a small, dependency-free ritual. */
+(() => {
+  "use strict";
 
-// ============================================================================
-// ANSWER DATABASE — 55 answers, 1:1 mapped across zh / en / ja
-// ============================================================================
-var answersDB = [
-  { zh:'是的，毫无疑问',         en:'It is certain',                       ja:'はい、間違いなくその通りです' },
-  { zh:'不要指望它',             en:'Don\'t count on it',                   ja:'期待しないでください' },
-  { zh:'现在还不到时候',         en:'Not now',                              ja:'今はまだその時ではありません' },
-  { zh:'跟随你的直觉',           en:'Follow your intuition',                ja:'あなたの直感に従いなさい' },
-  { zh:'答案就在你心中',         en:'The answer lies within you',           ja:'答えはあなたの心の中にあります' },
-  { zh:'保持耐心，一切自有安排',   en:'Be patient — all will unfold',         ja:'忍耐強くあれ——すべては明らかになるでしょう' },
-  { zh:'毫无疑问地肯定',         en:'Without a doubt, yes',                 ja:'疑いの余地なく、その通りです' },
-  { zh:'结果可能出乎意料',       en:'Expect the unexpected',                ja:'予想外の結果を覚悟してください' },
-  { zh:'你需要更多时间思考',     en:'You need more time to reflect',        ja:'もう少し考える時間が必要です' },
-  { zh:'勇敢去做吧',             en:'Go for it',                            ja:'思い切ってやってみなさい' },
-  { zh:'谨慎行事',               en:'Proceed with caution',                 ja:'慎重に進みなさい' },
-  { zh:'时间会给你答案',         en:'Time will reveal the answer',          ja:'時が答えを教えてくれるでしょう' },
-  { zh:'相信这个过程',           en:'Trust the process',                    ja:'その過程を信じなさい' },
-  { zh:'不要犹豫，行动吧',       en:'Do not hesitate — act now',             ja:'ためらわずに、今こそ行動しなさい' },
-  { zh:'这是一个难得的机会',     en:'This is a rare opportunity',           ja:'これは稀な機会です' },
-  { zh:'再等一等',               en:'Wait a little longer',                 ja:'もう少し待ちなさい' },
-  { zh:'放手去做，不必顾虑',     en:'Let go and do it',                     ja:'迷わずにやり遂げなさい' },
-  { zh:'是时候改变方向了',       en:'Change direction',                     ja:'方向を変えるべき時です' },
-  { zh:'顺其自然就好',           en:'Let it flow naturally',                ja:'自然の流れに身を任せなさい' },
-  { zh:'你会得到你想要的',       en:'You will get what you seek',           ja:'あなたは望むものを手に入れるでしょう' },
-  { zh:'不要抱太大期望',         en:'Lower your expectations',              ja:'過度な期待は禁物です' },
-  { zh:'重新考虑一下吧',         en:'Think twice',                          ja:'もう一度、考え直してみなさい' },
-  { zh:'答案是否定的',           en:'The answer is no',                     ja:'答えはノーです' },
-  { zh:'一切都会好起来的',       en:'Everything will be fine',              ja:'すべてはうまくいきます' },
-  { zh:'相信你自己',             en:'Believe in yourself',                  ja:'自分自身を信じなさい' },
-  { zh:'这值得冒险',             en:'It is worth the risk',                 ja:'そのリスクを取る価値はあります' },
-  { zh:'保持冷静，不要冲动',     en:'Stay calm — do not rush',               ja:'冷静さを保ち、衝動的に動いてはいけません' },
-  { zh:'时机尚未成熟',           en:'The time is not right',                ja:'時機が熟していません' },
-  { zh:'接受现实吧',             en:'Accept reality as it is',              ja:'現実をあるがままに受け入れなさい' },
-  { zh:'向前看，别回头',         en:'Look forward, not back',                ja:'前を向きなさい、振り返ってはいけません' },
-  { zh:'命运会有它的安排',       en:'Destiny has a plan',                   ja:'運命には計画があります' },
-  { zh:'不必强求',               en:'Do not force it',                      ja:'無理に求めてはいけません' },
-  { zh:'现在正是最好的时机',     en:'Now is the perfect moment',            ja:'今こそ完璧な瞬間です' },
-  { zh:'可能会有一些阻碍',       en:'Obstacles may appear',                 ja:'障害が立ちはだかるかもしれません' },
-  { zh:'听从你内心的声音',       en:'Listen to your inner voice',           ja:'内なる声に耳を傾けなさい' },
-  { zh:'千万不要放弃',           en:'Do not give up',                       ja:'決して諦めてはいけません' },
-  { zh:'换个角度重新思考',       en:'See it from another angle',            ja:'別の角度から見つめ直しなさい' },
-  { zh:'它会实现的',             en:'It will come true',                    ja:'それは実現するでしょう' },
-  { zh:'你需要做出一个选择',     en:'You must make a choice',               ja:'あなたは選択をしなければなりません' },
-  { zh:'保持信心，不要动摇',     en:'Keep the faith, unwavering',           ja:'信念を持ち続け、揺らいではいけません' },
-  { zh:'结果会让你满意的',       en:'You will be pleased with the outcome', ja:'結果にきっと満足するでしょう' },
-  { zh:'不要被表象迷惑',         en:'Look beyond the surface',              ja:'表面的なものに惑わされてはいけません' },
-  { zh:'勇敢面对，不要逃避',     en:'Face it with courage',                 ja:'勇気を持って立ち向かいなさい' },
-  { zh:'等待一个更好的时机',     en:'Wait for a better moment',             ja:'より良い瞬間を待ちなさい' },
-  { zh:'这件事比你想象的更重要', en:'This matters more than you think',     ja:'これはあなたが思うよりずっと重要です' },
-  { zh:'无所谓对错，去做就好',   en:'There is no right or wrong — just do it', ja:'正しいも間違いもありません——ただやりなさい' },
-  { zh:'你已经知道答案了',       en:'You already know the answer',          ja:'あなたはもう答えを知っています' },
-  { zh:'风险是可控的',           en:'The risk is manageable',               ja:'そのリスクは十分に制御可能です' },
-  { zh:'珍惜当下这一刻',         en:'Cherish this very moment',             ja:'今この瞬間を、心から大切にしなさい' },
-  { zh:'这一切终将过去',         en:'This too shall pass',                  ja:'これもまた、いつか過ぎ去るでしょう' },
-  { zh:'静观其变',               en:'Watch and wait',                       ja:'静かに見守りなさい' },
-  { zh:'主动出击，不要被动等待', en:'Take the initiative',                  ja:'自ら行動を起こしなさい' },
-  { zh:'答案在风中飘荡',         en:'The answer is blowing in the wind',    ja:'答えは風に舞っています' },
-  { zh:'力量就在你自己手中',     en:'The power is in your hands',           ja:'力はあなた自身の手の中にあります' },
-  { zh:'星辰正为你指引方向',     en:'The stars are guiding your path',      ja:'星々があなたの道を照らしています' },
-];
-
-// ============================================================================
-// ANSWER SENTIMENT — positive / neutral / negative
-// ============================================================================
-var answerSentiment = [
-  'positive', // 0  是的，毫无疑问
-  'negative', // 1  不要指望它
-  'negative', // 2  现在还不到时候
-  'positive', // 3  跟随你的直觉
-  'positive', // 4  答案就在你心中
-  'positive', // 5  保持耐心，一切自有安排
-  'positive', // 6  毫无疑问地肯定
-  'negative', // 7  结果可能出乎意料
-  'negative', // 8  你需要更多时间思考
-  'positive', // 9  勇敢去做吧
-  'negative', // 10 谨慎行事
-  'neutral',  // 11 时间会给你答案
-  'neutral',  // 12 相信这个过程
-  'positive', // 13 不要犹豫，行动吧
-  'positive', // 14 这是一个难得的机会
-  'negative', // 15 再等一等
-  'positive', // 16 放手去做，不必顾虑
-  'neutral',  // 17 是时候改变方向了
-  'positive', // 18 顺其自然就好
-  'positive', // 19 你会得到你想要的
-  'negative', // 20 不要抱太大期望
-  'negative', // 21 重新考虑一下吧
-  'negative', // 22 答案是否定的
-  'positive', // 23 一切都会好起来的
-  'positive', // 24 相信你自己
-  'positive', // 25 这值得冒险
-  'neutral',  // 26 保持冷静，不要冲动
-  'negative', // 27 时机尚未成熟
-  'negative', // 28 接受现实吧
-  'neutral',  // 29 向前看，别回头
-  'positive', // 30 命运会有它的安排
-  'negative', // 31 不必强求
-  'positive', // 32 现在正是最好的时机
-  'negative', // 33 可能会有一些阻碍
-  'positive', // 34 听从你内心的声音
-  'positive', // 35 千万不要放弃
-  'neutral',  // 36 换个角度重新思考
-  'positive', // 37 它会实现的
-  'neutral',  // 38 你需要做出一个选择
-  'positive', // 39 保持信心，不要动摇
-  'positive', // 40 结果会让你满意的
-  'neutral',  // 41 不要被表象迷惑
-  'neutral',  // 42 勇敢面对，不要逃避
-  'negative', // 43 等待一个更好的时机
-  'neutral',  // 44 这件事比你想象的更重要
-  'neutral',  // 45 无所谓对错，去做就好
-  'positive', // 46 你已经知道答案了
-  'positive', // 47 风险是可控的
-  'positive', // 48 珍惜当下这一刻
-  'neutral',  // 49 这一切终将过去
-  'negative', // 50 静观其变
-  'positive', // 51 主动出击，不要被动等待
-  'neutral',  // 52 答案在风中飘荡
-  'positive', // 53 力量就在你自己手中
-  'positive', // 54 星辰正为你指引方向
-];
-
-// ============================================================================
-// UI TEXT TRANSLATIONS
-// ============================================================================
-var uiText = {
-  zh: {
-    coverTitle: '答案之书',
-    coverSubtitle: 'The Book of Answers',
-    prompt: '在心中默念你的问题，打开答案之书吧',
-    clickHint: '点击任意处合上书本',
-  },
-  en: {
-    coverTitle: 'Book of Answers',
-    coverSubtitle: 'Ask, and the truth shall be revealed',
-    prompt: 'Hold your question in mind, then open the Book of Answers',
-    clickHint: 'Tap anywhere to close the book',
-  },
-  ja: {
-    coverTitle: '答えの書',
-    coverSubtitle: 'The Book of Answers',
-    prompt: '心の中で問いかけ、答えの書を開きましょう',
-    clickHint: 'どこかをタップして本を閉じる',
-  },
-};
-
-// ============================================================================
-// APPLICATION STATE
-// ============================================================================
-var currentLang = 'zh';
-var isOpen = false;
-var isAnimating = false;
-var currentAnswerIndex = -1;
-var audioCtx = null;
-var usedAnswerIndices = [];
-
-// ============================================================================
-// DOM REFERENCES
-// ============================================================================
-var bookEl        = document.getElementById('book');
-var frontCoverEl  = document.getElementById('frontCover');
-var sceneEl       = document.getElementById('scene');
-var answerTextEl  = document.getElementById('answerText');
-var answerWrapperEl = document.getElementById('answerWrapper');
-var particlesEl   = document.getElementById('particles');
-var promptEl      = document.getElementById('prompt');
-var clickHintEl   = document.getElementById('clickHint');
-var coverTitleEl  = document.getElementById('coverTitle');
-var coverSubtitleEl = document.getElementById('coverSubtitle');
-var langBtns      = document.querySelectorAll('.lang-btn');
-
-// ============================================================================
-// AUDIO ENGINE
-// ============================================================================
-
-function getAudioCtx() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-  return audioCtx;
-}
-
-function createNoiseBuffer(ctx, duration, decay, attack, amp) {
-  var sampleRate = ctx.sampleRate;
-  var len = Math.floor(sampleRate * duration);
-  var buffer = ctx.createBuffer(1, len, sampleRate);
-  var data = buffer.getChannelData(0);
-  for (var i = 0; i < len; i++) {
-    var t = i / sampleRate;
-    var env = Math.exp(-t * decay) * (1 - Math.exp(-t * attack));
-    data[i] = (Math.random() * 2 - 1) * env * amp;
-  }
-  return buffer;
-}
-
-/** Page-flip rustle. */
-function playFlipSound() {
-  try {
-    var ctx = getAudioCtx();
-    var now = ctx.currentTime;
-    var dur = 0.35;
-    var buf = createNoiseBuffer(ctx, dur, 14, 80, 0.6);
-    var src = ctx.createBufferSource();
-    src.buffer = buf;
-    var flt = ctx.createBiquadFilter();
-    flt.type = 'bandpass';
-    flt.frequency.setValueAtTime(900, now);
-    flt.frequency.linearRampToValueAtTime(1800, now + 0.15);
-    flt.frequency.linearRampToValueAtTime(500, now + dur);
-    flt.Q.value = 0.6;
-    var gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.5, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-    src.connect(flt);
-    flt.connect(gain);
-    gain.connect(ctx.destination);
-    src.start(now);
-    src.stop(now + dur);
-  } catch (_) {}
-}
-
-/** Answer reveal — C-E-G arpeggio with high overtone. */
-function playRevealSound() {
-  try {
-    var ctx = getAudioCtx();
-    var now = ctx.currentTime;
-    var notes = [523.25, 659.25, 783.99];
-    notes.forEach(function (freq, i) {
-      var t = now + 0.5 + i * 0.18;
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, t);
-      gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(0.22, t + 0.08);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t);
-      osc.stop(t + 1.9);
-    });
-    var overtone = ctx.createOscillator();
-    var og = ctx.createGain();
-    overtone.type = 'sine';
-    overtone.frequency.setValueAtTime(1046.5, now + 0.86);
-    og.gain.setValueAtTime(0, now + 0.86);
-    og.gain.linearRampToValueAtTime(0.08, now + 0.92);
-    og.gain.exponentialRampToValueAtTime(0.001, now + 2.2);
-    overtone.connect(og);
-    og.connect(ctx.destination);
-    overtone.start(now + 0.86);
-    overtone.stop(now + 2.3);
-  } catch (_) {}
-}
-
-/** Book-close thud. */
-function playCloseSound() {
-  try {
-    var ctx = getAudioCtx();
-    var now = ctx.currentTime;
-    var dur = 0.25;
-    var buf = createNoiseBuffer(ctx, dur, 18, 100, 0.4);
-    var src = ctx.createBufferSource();
-    src.buffer = buf;
-    var flt = ctx.createBiquadFilter();
-    flt.type = 'bandpass';
-    flt.frequency.setValueAtTime(500, now);
-    flt.frequency.linearRampToValueAtTime(300, now + dur);
-    flt.Q.value = 0.5;
-    var gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.35, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-    src.connect(flt);
-    flt.connect(gain);
-    gain.connect(ctx.destination);
-    src.start(now);
-    src.stop(now + dur);
-  } catch (_) {}
-}
-
-/** Short click / tap tick for UI interactions. */
-function playClickSound() {
-  try {
-    var ctx = getAudioCtx();
-    var now = ctx.currentTime;
-    var osc = ctx.createOscillator();
-    var gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(1800, now);
-    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.06);
-    gain.gain.setValueAtTime(0.12, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.1);
-  } catch (_) {}
-}
-
-// ============================================================================
-// PARTICLE SYSTEM
-// ============================================================================
-
-function spawnParticles(sentiment) {
-  var container = particlesEl;
-  container.innerHTML = '';
-
-  var count = 22;
-  var palettes = {
-    positive: ['#C4A97D', '#D4BC8F', '#DFCDA0', '#E8D5A8', '#F0E0B8'],
-    neutral:  ['#C4BDB6', '#D5CEC0', '#B8A88A', '#CCC4B8', '#D8D0C4'],
-    negative: ['#9EA8AC', '#B0B8BB', '#8C9498', '#A0A4A8', '#B8BCC0'],
+  const answers = window.BookAnswers;
+  const $ = (id) => document.getElementById(id);
+  const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const storage = {
+    get(key, fallback) {
+      try {
+        return localStorage.getItem(key) ?? fallback;
+      } catch {
+        return fallback;
+      }
+    },
+    set(key, value) {
+      try {
+        localStorage.setItem(key, value);
+      } catch {
+        /* Private browsing can disable storage. */
+      }
+    },
   };
-  var colors = palettes[sentiment] || palettes.neutral;
+  const copy = {
+    zh: {
+      lang: "zh-CN",
+      title: "答案之书",
+      subtitle: "The Book of Answers",
+      eyebrow: "留一点时间，给自己",
+      heading: "所有答案，\n都始于内心。",
+      intro: "有些犹豫，不必急着解开。\n让心安静下来，带着问题翻开这一页。",
+      note: "一次偶然的相遇，一点刚好的启发。",
+      edition: "写给每一个正在寻找的你",
+      coverMotto: "你寻找的，终会与你相遇",
+      pageLabel: "此刻，给你的答案",
+      answerNote: "把这一句，轻轻放在心上。",
+      prompt: "深呼吸，在心中默念你的问题",
+      openPrompt: "听听这一句，在你心里留下的回响",
+      waiting: "答案正在向你走来…",
+      open: "翻开答案",
+      close: "合上书本",
+      opening: "轻轻翻开…",
+      closing: "收好这一页…",
+      again: "再问一次",
+      openLabel: "翻开答案之书",
+      closeLabel: "合上答案之书",
+      keyboard: "也可以按空格键翻书",
+      touch: "轻触书本，也能找到答案",
+      soundOn: "声音开启",
+      soundOff: "声音关闭",
+      mute: "关闭音效",
+      unmute: "开启音效",
+      guideTitle: "一个小小的仪式",
+      step1: "安静片刻",
+      step1Copy: "放慢呼吸，让纷扰暂时离开",
+      step2: "心有所问",
+      step2Copy: "想着一个问题，不用说出口",
+      step3: "与答案相遇",
+      step3Copy: "轻轻翻开，听见心里的回响",
+      footer: "答案是灵感，而你的选择，才是方向。",
+      closed: "书本已合上。",
+    },
+    en: {
+      lang: "en",
+      title: "Book of Answers",
+      subtitle: "A little room for wonder",
+      eyebrow: "A MOMENT, JUST FOR YOU",
+      heading: "Every answer\nbegins within.",
+      intro:
+        "Not every uncertainty needs to be solved today.\nQuiet your mind. Bring a question. Turn a page.",
+      note: "A chance encounter. A little timely inspiration.",
+      edition: "FOR EVERY SEEKING SOUL",
+      coverMotto: "What you seek may find you",
+      pageLabel: "A WORD FOR THIS MOMENT",
+      answerNote: "Hold these words a little closer.",
+      prompt: "Take a breath. Hold your question in mind.",
+      openPrompt: "Listen to the echo these words leave within.",
+      waiting: "A little clarity is on its way…",
+      open: "Open the book",
+      close: "Close the book",
+      opening: "Turning a page…",
+      closing: "Keeping this moment…",
+      again: "Ask again",
+      openLabel: "Open the Book of Answers",
+      closeLabel: "Close the Book of Answers",
+      keyboard: "or press Space to turn the page",
+      touch: "Tap the book to find your answer",
+      soundOn: "Sound on",
+      soundOff: "Sound off",
+      mute: "Mute sound effects",
+      unmute: "Enable sound effects",
+      guideTitle: "A little ritual",
+      step1: "Be still",
+      step1Copy: "Slow your breath. Let the noise fade.",
+      step2: "Hold a question",
+      step2Copy: "Keep it in mind. No need to say it.",
+      step3: "Meet your answer",
+      step3Copy: "Turn a page. Notice what resonates.",
+      footer: "A little inspiration. The direction is yours to choose.",
+      closed: "The book is closed.",
+    },
+    ja: {
+      lang: "ja",
+      title: "答えの書",
+      subtitle: "The Book of Answers",
+      eyebrow: "自分のための、ひととき",
+      heading: "答えはいつも、\n心の中から。",
+      intro:
+        "迷いを、急いでほどかなくてもいい。\n心を静めて、問いとともにページを開こう。",
+      note: "偶然の出会いが、小さな気づきになる。",
+      edition: "答えを探しているあなたへ",
+      coverMotto: "探しているものと、いつか出会える",
+      pageLabel: "今、あなたへの言葉",
+      answerNote: "この言葉を、そっと心に置いて。",
+      prompt: "深呼吸して、心の中で問いかけて",
+      openPrompt: "この言葉が、心に残す響きを感じて",
+      waiting: "答えが、そっと近づいています…",
+      open: "答えを開く",
+      close: "本を閉じる",
+      opening: "そっと開いて…",
+      closing: "この一頁を胸に…",
+      again: "もう一度",
+      openLabel: "答えの書を開く",
+      closeLabel: "答えの書を閉じる",
+      keyboard: "スペースキーでも開けます",
+      touch: "本に触れて、答えに出会う",
+      soundOn: "音声オン",
+      soundOff: "音声オフ",
+      mute: "効果音をオフにする",
+      unmute: "効果音をオンにする",
+      guideTitle: "小さな儀式",
+      step1: "静かなひととき",
+      step1Copy: "ゆっくり呼吸して、心をほどく",
+      step2: "心に問いを",
+      step2Copy: "言葉にせず、そっと思い浮かべる",
+      step3: "答えに出会う",
+      step3Copy: "ページを開き、心の響きを聴く",
+      footer: "答えはひとつのヒント。進む道を選ぶのは、あなた。",
+      closed: "本を閉じました。",
+    },
+  };
 
-  for (var i = 0; i < count; i++) {
-    var p = document.createElement('div');
-    p.className = 'particle';
+  const savedLanguage = storage.get("book.language", "zh");
+  const state = {
+    language: Object.hasOwn(copy, savedLanguage) ? savedLanguage : "zh",
+    phase: "closed",
+    index: -1,
+    bag: [],
+    sound: storage.get("book.sound", "on") !== "off",
+  };
 
-    var angle = Math.random() * Math.PI * 2;
-    var distance = 50 + Math.random() * 100;
-    var dx = Math.cos(angle) * distance;
-    var dy = Math.sin(angle) * distance - 30; // bias upward
-
-    var size = 3 + Math.random() * 5;
-    var delay = Math.random() * 0.25;
-    var duration = 1.2 + Math.random() * 1.6;
-
-    p.style.setProperty('--size', size + 'px');
-    p.style.setProperty('--dx', dx + 'px');
-    p.style.setProperty('--dy', dy + 'px');
-    p.style.setProperty('--delay', delay + 's');
-    p.style.setProperty('--duration', duration + 's');
-    p.style.setProperty('--rot', (Math.random() * 360) + 'deg');
-    p.style.setProperty('--color', colors[Math.floor(Math.random() * colors.length)]);
-
-    // Random shape variety
-    if (Math.random() < 0.3) {
-      p.classList.add('diamond');
+  // One audio graph with a master volume: muting also stops already-ringing notes.
+  class SoundEngine {
+    constructor() {
+      this.context = null;
+      this.master = null;
+      this.voices = new Set();
     }
-
-    container.appendChild(p);
-
-    // Auto-remove after animation
-    (function (el) {
-      var life = (delay + duration) * 1000 + 200;
-      setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, life);
-    })(p);
-  }
-}
-
-// ============================================================================
-// ANSWER SELECTION — random without repeat
-// ============================================================================
-function getRandomAnswerIndex() {
-  if (usedAnswerIndices.length >= answersDB.length) {
-    usedAnswerIndices = [];
-  }
-  var available = [];
-  for (var i = 0; i < answersDB.length; i++) {
-    if (usedAnswerIndices.indexOf(i) === -1) {
-      available.push(i);
+    ready() {
+      if (!state.sound) return false;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return false;
+      try {
+        if (!this.context) {
+          this.context = new AudioContext();
+          this.master = this.context.createGain();
+          this.master.gain.value = 0.34;
+          this.master.connect(this.context.destination);
+        }
+        if (this.context.state === "suspended")
+          this.context.resume().catch(() => {});
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    track(source, nodes) {
+      this.voices.add(source);
+      source.onended = () => {
+        this.voices.delete(source);
+        source.disconnect();
+        nodes.forEach((node) => node.disconnect());
+      };
+    }
+    setEnabled(enabled) {
+      if (!enabled) {
+        this.voices.forEach((source) => {
+          try {
+            source.stop();
+          } catch {
+            /* Already ended. */
+          }
+        });
+      }
+      if (this.master)
+        this.master.gain.setTargetAtTime(
+          enabled ? 0.34 : 0,
+          this.context.currentTime,
+          0.025,
+        );
+    }
+    tone(frequency, delay = 0, duration = 0.8, volume = 0.12, pan = 0) {
+      if (!this.ready()) return;
+      const ctx = this.context,
+        start = ctx.currentTime + delay;
+      const oscillator = ctx.createOscillator(),
+        gain = ctx.createGain(),
+        stereo = ctx.createStereoPanner();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(frequency, start);
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(volume, start + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      stereo.pan.value = pan;
+      oscillator.connect(gain).connect(stereo).connect(this.master);
+      this.track(oscillator, [gain, stereo]);
+      oscillator.start(start);
+      oscillator.stop(start + duration + 0.02);
+    }
+    rustle(delay = 0, duration = 0.5, volume = 0.2, closing = false) {
+      if (!this.ready()) return;
+      const ctx = this.context,
+        start = ctx.currentTime + delay;
+      const buffer = ctx.createBuffer(
+        1,
+        Math.ceil(ctx.sampleRate * duration),
+        ctx.sampleRate,
+      );
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) {
+        const progress = i / data.length;
+        data[i] =
+          (Math.random() * 2 - 1) *
+          Math.sin(Math.PI * progress) *
+          (1 - progress);
+      }
+      const source = ctx.createBufferSource(),
+        filter = ctx.createBiquadFilter();
+      const gain = ctx.createGain(),
+        stereo = ctx.createStereoPanner();
+      source.buffer = buffer;
+      filter.type = closing ? "lowpass" : "bandpass";
+      filter.Q.value = 0.7;
+      filter.frequency.setValueAtTime(closing ? 600 : 1600, start);
+      filter.frequency.exponentialRampToValueAtTime(
+        closing ? 140 : 600,
+        start + duration,
+      );
+      gain.gain.value = volume;
+      stereo.pan.setValueAtTime(closing ? -0.4 : 0.45, start);
+      stereo.pan.linearRampToValueAtTime(
+        closing ? 0.3 : -0.45,
+        start + duration,
+      );
+      source.connect(filter).connect(gain).connect(stereo).connect(this.master);
+      this.track(source, [filter, gain, stereo]);
+      source.start(start);
+      source.stop(start + duration);
+    }
+    open() {
+      this.rustle(0, 0.65, 0.32);
+      this.rustle(0.14, 0.4, 0.16);
+      this.tone(196, 0, 0.4, 0.09);
+    }
+    reveal(sentiment) {
+      const chords = {
+        positive: [392, 493.88, 587.33, 783.99],
+        neutral: [349.23, 523.25, 698.46],
+        negative: [293.66, 440, 587.33],
+      };
+      const notes = chords[sentiment] || chords.neutral;
+      notes.forEach((note, index) => {
+        this.tone(note, index * 0.13, 1.9, 0.115, (index - 1) * 0.22);
+        this.tone(note * 2, index * 0.13 + 0.16, 1.3, 0.022, (1 - index) * 0.2);
+        this.tone(note, index * 0.13 + 0.32, 1.6, 0.025, 0.3);
+      });
+    }
+    close() {
+      this.rustle(0, 0.45, 0.28, true);
+      this.tone(130.81, 0.2, 0.3, 0.12);
+    }
+    click() {
+      this.tone(880, 0, 0.16, 0.06);
+      this.tone(1320, 0.035, 0.12, 0.025);
     }
   }
-  var idx = available[Math.floor(Math.random() * available.length)];
-  usedAnswerIndices.push(idx);
-  return idx;
-}
+  const audio = new SoundEngine();
 
-// ============================================================================
-// UI TEXT UPDATE
-// ============================================================================
-function updateUIText() {
-  var t = uiText[currentLang];
-  coverTitleEl.textContent = t.coverTitle;
-  coverSubtitleEl.textContent = t.coverSubtitle;
-  promptEl.textContent = t.prompt;
-  clickHintEl.textContent = t.clickHint;
-
-  if (isOpen && currentAnswerIndex >= 0) {
-    answerTextEl.textContent = answersDB[currentAnswerIndex][currentLang];
+  // Shuffle once per cycle; all 120 answers appear before any are repeated.
+  // Keep the first answer of a new cycle different from the previous answer.
+  function nextAnswer() {
+    if (!state.bag.length) {
+      state.bag = answers.map((_, index) => index);
+      for (let i = state.bag.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [state.bag[i], state.bag[j]] = [state.bag[j], state.bag[i]];
+      }
+      if (state.bag.at(-1) === state.index)
+        [state.bag[0], state.bag[state.bag.length - 1]] = [
+          state.bag.at(-1),
+          state.bag[0],
+        ];
+    }
+    return state.bag.pop();
   }
 
-  var langMap = { zh: 'zh-CN', en: 'en', ja: 'ja' };
-  document.documentElement.lang = langMap[currentLang];
-}
+  function setMultiline(element, text) {
+    element.replaceChildren();
+    text.split("\n").forEach((line, index) => {
+      if (index) element.append(document.createElement("br"));
+      element.append(document.createTextNode(line));
+    });
+  }
 
-function setLang(lang) {
-  if (lang === currentLang || isAnimating) return;
-  currentLang = lang;
+  function render() {
+    const t = copy[state.language];
+    const busy = state.phase === "opening" || state.phase === "closing";
+    const open = state.phase === "open";
+    document.documentElement.lang = t.lang;
+    document.title = `${t.title} · The Book of Answers`;
+    document
+      .querySelectorAll("[data-i18n]")
+      .forEach((element) => setMultiline(element, t[element.dataset.i18n]));
+    document.querySelectorAll(".lang-btn").forEach((button) => {
+      const active = button.dataset.lang === state.language;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    document
+      .querySelector(".ritual-guide")
+      .setAttribute("aria-label", t.guideTitle);
+    $("coverTitle").textContent = t.title;
+    $("coverSubtitle").textContent = t.subtitle;
+    $("actionLabel").textContent = busy
+      ? t[state.phase]
+      : open
+        ? t.close
+        : t.open;
+    $("prompt").textContent =
+      state.phase === "opening" ? t.waiting : open ? t.openPrompt : t.prompt;
+    $("actionButton").disabled = busy;
+    $("bookButton").disabled = busy;
+    $("againButton").disabled = busy;
+    $("againButton").hidden = !open;
+    $("bookButton").setAttribute("aria-expanded", String(open));
+    $("bookButton").setAttribute(
+      "aria-label",
+      open ? t.closeLabel : t.openLabel,
+    );
+    $("answerPage").setAttribute("aria-hidden", String(!open));
+    $("soundLabel").textContent = state.sound ? t.soundOn : t.soundOff;
+    $("soundIcon").setAttribute(
+      "href",
+      state.sound ? "#sound-on" : "#sound-off",
+    );
+    $("soundToggle").setAttribute("aria-pressed", String(state.sound));
+    $("soundToggle").setAttribute(
+      "aria-label",
+      state.sound ? t.mute : t.unmute,
+    );
+    $("soundToggle").title = state.sound ? t.mute : t.unmute;
+    if (state.index >= 0) {
+      $("answerText").textContent = answers[state.index][state.language];
+      $("pageNumber").textContent = String(state.index + 1).padStart(3, "0");
+    }
+  }
 
-  langBtns.forEach(function (btn) {
-    btn.classList.toggle('active', btn.dataset.lang === lang);
+  function particles(sentiment) {
+    if (motion.matches) return;
+    const palette = {
+      positive: ["#e5cd90", "#f5e8c6"],
+      neutral: ["#c0d2c2", "#dfd4ab"],
+      negative: ["#b4c8cc", "#d2dbc9"],
+    };
+    const colors = palette[sentiment] || palette.neutral;
+    const count = window.innerWidth < 760 ? 14 : 24;
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const particle = document.createElement("span");
+      particle.className = "particle";
+      particle.style.setProperty("--size", `${1.5 + Math.random() * 3}px`);
+      particle.style.setProperty("--sx", `${(Math.random() - 0.5) * 180}px`);
+      particle.style.setProperty("--dx", `${(Math.random() - 0.5) * 340}px`);
+      particle.style.setProperty("--dy", `${-100 - Math.random() * 150}px`);
+      particle.style.setProperty("--duration", `${1.4 + Math.random() * 1.1}s`);
+      particle.style.setProperty("--color", colors[i % colors.length]);
+      particle.addEventListener("animationend", () => particle.remove(), {
+        once: true,
+      });
+      fragment.append(particle);
+    }
+    $("particles").replaceChildren(fragment);
+  }
+
+  const wait = (duration) =>
+    new Promise((resolve) =>
+      setTimeout(resolve, motion.matches ? 0 : duration),
+    );
+  async function openBook() {
+    if (state.phase !== "closed") return;
+    state.phase = "opening";
+    state.index = nextAnswer();
+    $("announcement").textContent = "";
+    $("scene").classList.add("is-busy", "is-open");
+    render();
+    audio.open();
+    await wait(520);
+    audio.reveal(answers[state.index].sentiment);
+    particles(answers[state.index].sentiment);
+    await wait(650);
+    state.phase = "open";
+    $("scene").classList.remove("is-busy");
+    render();
+    $("announcement").textContent = answers[state.index][state.language];
+  }
+
+  async function closeBook() {
+    if (state.phase !== "open") return;
+    state.phase = "closing";
+    $("scene").classList.add("is-busy", "is-closing");
+    $("scene").classList.remove("is-open");
+    $("particles").replaceChildren();
+    render();
+    audio.close();
+    await wait(1100);
+    state.phase = "closed";
+    $("scene").classList.remove("is-busy", "is-closing");
+    render();
+    $("announcement").textContent = copy[state.language].closed;
+  }
+
+  function toggleBook() {
+    if (state.phase === "closed") void openBook();
+    else if (state.phase === "open") void closeBook();
+  }
+  $("bookButton").addEventListener("click", toggleBook);
+  $("actionButton").addEventListener("click", toggleBook);
+  $("againButton").addEventListener("click", async () => {
+    if (state.phase !== "open") return;
+    // The secondary button disappears during the transition; retain usable focus.
+    $("actionButton").focus();
+    await closeBook();
+    await openBook();
+    $("actionButton").focus();
   });
-
-  updateUIText();
-  playClickSound();
-}
-
-// ============================================================================
-// BOOK ANIMATION
-// ============================================================================
-
-function openBook() {
-  if (isOpen || isAnimating) return;
-  isAnimating = true;
-
-  currentAnswerIndex = getRandomAnswerIndex();
-  answerTextEl.textContent = answersDB[currentAnswerIndex][currentLang];
-
-  bookEl.classList.remove('closing');
-  frontCoverEl.classList.remove('closing');
-
-  bookEl.classList.add('opening', 'open');
-  promptEl.classList.add('hidden');
-  clickHintEl.classList.add('visible');
-
-  playFlipSound();
-
-  // Reveal chime + particles after cover has started opening
-  setTimeout(function () {
-    playRevealSound();
-    spawnParticles(answerSentiment[currentAnswerIndex]);
-  }, 400);
-
-  setTimeout(function () {
-    isAnimating = false;
-    isOpen = true;
-    bookEl.classList.remove('opening');
-  }, 1200);
-}
-
-function closeBook() {
-  if (!isOpen || isAnimating) return;
-  isAnimating = true;
-
-  playCloseSound();
-
-  // The cover starts closing; answer fades; spread stays visible during close
-  bookEl.classList.add('closing');
-  bookEl.classList.remove('open');
-  promptEl.classList.remove('hidden');
-  clickHintEl.classList.remove('visible');
-
-  setTimeout(function () {
-    bookEl.classList.remove('closing');
-    isAnimating = false;
-    isOpen = false;
-    currentAnswerIndex = -1;
-    // Clean up any remaining particles
-    particlesEl.innerHTML = '';
-  }, 900);
-}
-
-// ============================================================================
-// EVENT BINDINGS
-// ============================================================================
-
-sceneEl.addEventListener('click', function () {
-  if (isOpen) {
-    closeBook();
-  } else if (!isAnimating) {
-    openBook();
-  }
-});
-
-bookEl.addEventListener('click', function (e) {
-  if (!isOpen && !isAnimating) {
-    e.stopPropagation();
-    openBook();
-  }
-});
-
-langBtns.forEach(function (btn) {
-  btn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    setLang(btn.dataset.lang);
+  $("scene").addEventListener("click", (event) => {
+    if (state.phase === "open" && !event.target.closest("button"))
+      void closeBook();
   });
-});
-
-document.addEventListener('keydown', function (e) {
-  if (e.key === ' ' || e.code === 'Space') {
-    e.preventDefault();
-    if (isOpen && !isAnimating) {
-      closeBook();
-    } else if (!isOpen && !isAnimating) {
-      openBook();
-    }
-  }
-});
-
-// ============================================================================
-// INIT
-// ============================================================================
-updateUIText();
+  document.querySelectorAll(".lang-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (state.language === button.dataset.lang) return;
+      state.language = button.dataset.lang;
+      storage.set("book.language", state.language);
+      audio.click();
+      render();
+      if (state.phase === "open")
+        $("announcement").textContent = answers[state.index][state.language];
+    });
+  });
+  $("soundToggle").addEventListener("click", () => {
+    state.sound = !state.sound;
+    storage.set("book.sound", state.sound ? "on" : "off");
+    audio.setEnabled(state.sound);
+    if (state.sound) audio.click();
+    render();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.code !== "Space" ||
+      event.repeat ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey
+    )
+      return;
+    if (
+      event.target.closest(
+        'button, a, input, textarea, select, [contenteditable="true"]',
+      )
+    )
+      return;
+    event.preventDefault();
+    toggleBook();
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && audio.context)
+      audio.context.suspend().catch(() => {});
+  });
+  motion.addEventListener("change", () => {
+    if (motion.matches) $("particles").replaceChildren();
+  });
+  render();
+})();

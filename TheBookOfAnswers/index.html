@@ -1,84 +1,272 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>答案之书 | The Book of Answers | 答えの書</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-<div class="lang-switcher" id="langSwitcher">
-  <button class="lang-btn active" data-lang="zh" aria-label="中文">中文</button>
-  <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
-  <button class="lang-btn" data-lang="ja" aria-label="日本語">日本語</button>
-</div>
-
-<div class="scene" id="scene">
-  <div class="book-stage">
-    <div class="book" id="book">
-
-      <!-- Back cover -->
-      <div class="back-cover"></div>
-
-      <!-- Page-stack edge — visible thickness when book is tilted -->
-      <div class="page-stack"></div>
-
-      <!-- Open page spread -->
-      <div class="spread" id="spreadEl">
-        <div class="page-left"></div>
-        <div class="page-right"></div>
-        <!-- Answer spans full spread -->
-        <div class="answer-wrapper" id="answerWrapper">
-          <div class="answer-ornament"></div>
-          <div class="answer-text" id="answerText"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#153e38" />
+    <meta
+      name="description"
+      content="慢下来，听听心里的声音。一本属于你的答案之书，收录中、英、日三语灵感。"
+    />
+    <title>答案之书 · The Book of Answers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@400;500;600&family=Noto+Serif+JP:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="answers.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <svg class="svg-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <symbol id="star" viewBox="0 0 32 32">
+          <path
+            d="m16 1 3.4 11.6L31 16l-11.6 3.4L16 31l-3.4-11.6L1 16l11.6-3.4Z"
+            fill="none"
+            stroke="currentColor"
+          />
+          <circle cx="16" cy="16" r="3" fill="currentColor" />
+        </symbol>
+        <symbol id="sound-on" viewBox="0 0 24 24">
+          <path
+            d="M11 5 6 9H3v6h3l5 4V5Zm4 3a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"
+          />
+        </symbol>
+        <symbol id="sound-off" viewBox="0 0 24 24">
+          <path d="M11 5 6 9H3v6h3l5 4V5Zm5 4 5 6m0-6-5 6" />
+        </symbol>
+        <symbol id="arrow" viewBox="0 0 24 24">
+          <path d="M4 12h15m-6-6 6 6-6 6" />
+        </symbol>
+      </defs>
+    </svg>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="答案之书 · The Book of Answers"
+        ><svg class="brand-star" aria-hidden="true"><use href="#star" /></svg
+        ><span>THE BOOK <i>of</i> ANSWERS</span></a
+      >
+      <div class="header-tools">
+        <div class="language-switcher" role="group" aria-label="Language">
+          <button
+            class="lang-btn active"
+            data-lang="zh"
+            lang="zh-CN"
+            aria-pressed="true"
+          >
+            中
+          </button>
+          <button
+            class="lang-btn"
+            data-lang="en"
+            lang="en"
+            aria-pressed="false"
+          >
+            EN
+          </button>
+          <button
+            class="lang-btn"
+            data-lang="ja"
+            lang="ja"
+            aria-pressed="false"
+          >
+            日
+          </button>
         </div>
-
-        <!-- Particle container -->
-        <div class="particles" id="particles"></div>
+        <span class="tool-divider" aria-hidden="true"></span>
+        <button
+          class="sound-toggle"
+          id="soundToggle"
+          aria-pressed="true"
+          aria-label="关闭音效"
+          title="关闭音效"
+        >
+          <svg aria-hidden="true"><use id="soundIcon" href="#sound-on" /></svg
+          ><span id="soundLabel">声音开启</span>
+        </button>
       </div>
-
-      <!-- Front cover — rotates open via 3D transform -->
-      <div class="front-cover" id="frontCover">
-        <!-- Cover board thickness edges -->
-        <div class="board-edge board-edge-top"></div>
-        <div class="board-edge board-edge-bottom"></div>
-        <div class="board-edge board-edge-right"></div>
-        <div class="cover-face cover-outside">
-
-          <!-- Gold corner protectors -->
-          <div class="corner corner-tl"><span class="corner-rivet"></span></div>
-          <div class="corner corner-tr"><span class="corner-rivet"></span></div>
-          <div class="corner corner-bl"><span class="corner-rivet"></span></div>
-          <div class="corner corner-br"><span class="corner-rivet"></span></div>
-
-          <!-- Central gold ornament -->
-          <div class="cover-ornament">
-            <div class="ornament-dot dot-top"></div>
-            <div class="ornament-dot dot-bottom"></div>
-            <div class="ornament-dot dot-left"></div>
-            <div class="ornament-dot dot-right"></div>
+    </header>
+    <main>
+      <section class="experience" aria-labelledby="pageTitle">
+        <div class="intro">
+          <p class="eyebrow">
+            <span></span><span data-i18n="eyebrow">留一点时间，给自己</span>
+          </p>
+          <h1 id="pageTitle" data-i18n="heading">
+            所有答案，<br />都始于内心。
+          </h1>
+          <p class="intro-copy" data-i18n="intro">
+            有些犹豫，不必急着解开。<br />让心安静下来，带着问题翻开这一页。
+          </p>
+          <div class="intro-divider" aria-hidden="true"></div>
+          <p class="editorial-note">
+            <span class="tiny-star" aria-hidden="true">✧</span
+            ><span data-i18n="note">一次偶然的相遇，一点刚好的启发。</span>
+          </p>
+          <p class="edition">
+            VOL. 01 <span>—</span>
+            <span data-i18n="edition">写给每一个正在寻找的你</span>
+          </p>
+        </div>
+        <div class="book-experience">
+          <div class="scene" id="scene">
+            <div class="orbit orbit-one" aria-hidden="true"></div>
+            <div class="orbit orbit-two" aria-hidden="true"></div>
+            <span class="orbit-star star-one" aria-hidden="true">✦</span
+            ><span class="orbit-star star-two" aria-hidden="true">✧</span
+            ><span class="orbit-star star-three" aria-hidden="true">·</span>
+            <span class="scene-caption" aria-hidden="true"
+              >LET THE UNIVERSE WHISPER</span
+            >
+            <div class="book-float">
+              <div class="book" id="book">
+                <div class="book-pages" aria-hidden="true"></div>
+                <div class="answer-page" id="answerPage" aria-hidden="true">
+                  <div class="page-border" aria-hidden="true"></div>
+                  <div class="page-topline">
+                    <span data-i18n="pageLabel">此刻，给你的答案</span
+                    ><span class="page-mark">✧</span>
+                  </div>
+                  <div class="answer-content">
+                    <svg class="answer-star" aria-hidden="true">
+                      <use href="#star" />
+                    </svg>
+                    <p class="answer-text" id="answerText"></p>
+                    <div class="answer-rule" aria-hidden="true">
+                      <span>✦</span>
+                    </div>
+                    <p class="answer-footnote" data-i18n="answerNote">
+                      把这一句，轻轻放在心上。
+                    </p>
+                  </div>
+                  <div class="page-bottomline">
+                    <span>THE BOOK OF ANSWERS</span
+                    ><span id="pageNumber">001</span>
+                  </div>
+                </div>
+                <div class="turning-leaf leaf-one" aria-hidden="true"></div>
+                <div class="turning-leaf leaf-two" aria-hidden="true"></div>
+                <div class="cover" id="frontCover" aria-hidden="true">
+                  <div class="cover-frame"></div>
+                  <span class="cover-corner corner-tl">✧</span
+                  ><span class="cover-corner corner-tr">✧</span
+                  ><span class="cover-corner corner-bl">✧</span
+                  ><span class="cover-corner corner-br">✧</span>
+                  <span class="cover-edition"
+                    >A LITTLE BOOK OF POSSIBILITIES</span
+                  >
+                  <div class="celestial-seal">
+                    <svg viewBox="0 0 180 180" aria-hidden="true">
+                      <circle cx="90" cy="90" r="76" />
+                      <circle cx="90" cy="90" r="65" stroke-dasharray="1 7" />
+                      <path
+                        d="M90 4v18m0 136v18M4 90h18m136 0h18M29 29l12 12m98 98 12 12M29 151l12-12m98-98 12-12"
+                      />
+                      <path
+                        class="seal-star"
+                        d="m90 34 12 44 44 12-44 12-12 44-12-44-44-12 44-12Z"
+                      />
+                      <circle cx="90" cy="90" r="22" />
+                      <circle cx="90" cy="90" r="6" />
+                      <path
+                        d="m57 57 13 6-7 7Zm66 0-13 6 7 7Zm0 66-13-6 7-7Zm-66 0 13-6-7-7Z"
+                      />
+                    </svg>
+                  </div>
+                  <h2 class="cover-title" id="coverTitle">答案之书</h2>
+                  <p class="cover-subtitle" id="coverSubtitle">
+                    The Book of Answers
+                  </p>
+                  <span class="cover-line" aria-hidden="true"></span>
+                  <p class="cover-motto" data-i18n="coverMotto">
+                    你寻找的，终会与你相遇
+                  </p>
+                  <span class="cover-bottom"
+                    >EST. IN YOUR HEART <span>✦</span></span
+                  >
+                </div>
+                <span class="ribbon" aria-hidden="true"></span>
+                <button
+                  class="book-hitarea"
+                  id="bookButton"
+                  aria-label="翻开答案之书"
+                  aria-expanded="false"
+                  aria-controls="answerPage"
+                ></button>
+              </div>
+            </div>
+            <div class="particles" id="particles" aria-hidden="true"></div>
           </div>
-
-          <h1 class="cover-title" id="coverTitle">答案之书</h1>
-          <p class="cover-subtitle" id="coverSubtitle">The Book of Answers</p>
+          <div class="book-controls">
+            <p class="ritual-prompt" id="prompt">深呼吸，在心中默念你的问题</p>
+            <div class="action-row">
+              <button class="primary-button" id="actionButton">
+                <span id="actionLabel">翻开答案</span
+                ><svg aria-hidden="true"><use href="#arrow" /></svg></button
+              ><button class="again-button" id="againButton" hidden>
+                <span aria-hidden="true">↻</span
+                ><span data-i18n="again">再问一次</span>
+              </button>
+            </div>
+            <p class="keyboard-hint" id="keyboardHint">
+              <kbd>SPACE</kbd
+              ><span data-i18n="keyboard">也可以按空格键翻书</span>
+            </p>
+            <p class="touch-hint" data-i18n="touch">轻触书本，也能找到答案</p>
+          </div>
+          <p
+            class="sr-only"
+            id="announcement"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></p>
         </div>
-        <div class="cover-face cover-inside"></div>
-      </div>
-
-      <!-- Spine -->
-      <div class="spine"></div>
-
-    </div>
-  </div>
-</div>
-
-<p class="prompt" id="prompt">在心中默念你的问题，打开答案之书吧</p>
-<p class="click-hint" id="clickHint">点击任意处合上书本</p>
-
-<script src="app.js"></script>
-</body>
+      </section>
+      <section class="ritual-guide" aria-label="使用方式">
+        <div class="guide-heading">
+          <svg aria-hidden="true"><use href="#star" /></svg
+          ><span data-i18n="guideTitle">一个小小的仪式</span>
+        </div>
+        <div class="guide-step">
+          <span class="step-number">01</span>
+          <div>
+            <h3 data-i18n="step1">安静片刻</h3>
+            <p data-i18n="step1Copy">放慢呼吸，让纷扰暂时离开</p>
+          </div>
+        </div>
+        <div class="guide-step">
+          <span class="step-number">02</span>
+          <div>
+            <h3 data-i18n="step2">心有所问</h3>
+            <p data-i18n="step2Copy">想着一个问题，不用说出口</p>
+          </div>
+        </div>
+        <div class="guide-step">
+          <span class="step-number">03</span>
+          <div>
+            <h3 data-i18n="step3">与答案相遇</h3>
+            <p data-i18n="step3Copy">轻轻翻开，听见心里的回响</p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <span data-i18n="footer">答案是灵感，而你的选择，才是方向。</span
+      ><span class="footer-signature"
+        >MADE FOR THE WANDERING SOUL <span>✧</span></span
+      >
+    </footer>
+    <noscript
+      ><p class="noscript">
+        请启用 JavaScript 来翻开答案之书。Please enable JavaScript to open the
+        book.
+      </p></noscript
+    >
+  </body>
 </html>
