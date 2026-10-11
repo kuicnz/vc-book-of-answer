@@ -24,16 +24,13 @@
   const copy = {
     zh: {
       lang: "zh-CN",
+      switchLanguage: "切换到英文",
       title: "答案之书",
       subtitle: "The Book of Answers",
       eyebrow: "留一点时间，给自己",
       heading: "所有答案，\n都始于内心。",
       intro: "有些犹豫，不必急着解开。\n让心安静下来，带着问题翻开这一页。",
-      note: "一次偶然的相遇，一点刚好的启发。",
-      edition: "写给每一个正在寻找的你",
-      coverMotto: "你寻找的，终会与你相遇",
       pageLabel: "此刻，给你的答案",
-      answerNote: "把这一句，轻轻放在心上。",
       prompt: "深呼吸，在心中默念你的问题",
       openPrompt: "听听这一句，在你心里留下的回响",
       waiting: "答案正在向你走来…",
@@ -50,29 +47,18 @@
       soundOff: "声音关闭",
       mute: "关闭音效",
       unmute: "开启音效",
-      guideTitle: "一个小小的仪式",
-      step1: "安静片刻",
-      step1Copy: "放慢呼吸，让纷扰暂时离开",
-      step2: "心有所问",
-      step2Copy: "想着一个问题，不用说出口",
-      step3: "与答案相遇",
-      step3Copy: "轻轻翻开，听见心里的回响",
-      footer: "答案是灵感，而你的选择，才是方向。",
       closed: "书本已合上。",
     },
     en: {
       lang: "en",
+      switchLanguage: "Switch to Chinese",
       title: "Book of Answers",
       subtitle: "A little room for wonder",
       eyebrow: "A MOMENT, JUST FOR YOU",
       heading: "Every answer\nbegins within.",
       intro:
         "Not every uncertainty needs to be solved today.\nQuiet your mind. Bring a question. Turn a page.",
-      note: "A chance encounter. A little timely inspiration.",
-      edition: "FOR EVERY SEEKING SOUL",
-      coverMotto: "What you seek may find you",
       pageLabel: "A WORD FOR THIS MOMENT",
-      answerNote: "Hold these words a little closer.",
       prompt: "Take a breath. Hold your question in mind.",
       openPrompt: "Listen to the echo these words leave within.",
       waiting: "A little clarity is on its way…",
@@ -89,54 +75,7 @@
       soundOff: "Sound off",
       mute: "Mute sound effects",
       unmute: "Enable sound effects",
-      guideTitle: "A little ritual",
-      step1: "Be still",
-      step1Copy: "Slow your breath. Let the noise fade.",
-      step2: "Hold a question",
-      step2Copy: "Keep it in mind. No need to say it.",
-      step3: "Meet your answer",
-      step3Copy: "Turn a page. Notice what resonates.",
-      footer: "A little inspiration. The direction is yours to choose.",
       closed: "The book is closed.",
-    },
-    ja: {
-      lang: "ja",
-      title: "答えの書",
-      subtitle: "The Book of Answers",
-      eyebrow: "自分のための、ひととき",
-      heading: "答えはいつも、\n心の中から。",
-      intro:
-        "迷いを、急いでほどかなくてもいい。\n心を静めて、問いとともにページを開こう。",
-      note: "偶然の出会いが、小さな気づきになる。",
-      edition: "答えを探しているあなたへ",
-      coverMotto: "探しているものと、いつか出会える",
-      pageLabel: "今、あなたへの言葉",
-      answerNote: "この言葉を、そっと心に置いて。",
-      prompt: "深呼吸して、心の中で問いかけて",
-      openPrompt: "この言葉が、心に残す響きを感じて",
-      waiting: "答えが、そっと近づいています…",
-      open: "答えを開く",
-      close: "本を閉じる",
-      opening: "そっと開いて…",
-      closing: "この一頁を胸に…",
-      again: "もう一度",
-      openLabel: "答えの書を開く",
-      closeLabel: "答えの書を閉じる",
-      keyboard: "スペースキーでも開けます",
-      touch: "本に触れて、答えに出会う",
-      soundOn: "音声オン",
-      soundOff: "音声オフ",
-      mute: "効果音をオフにする",
-      unmute: "効果音をオンにする",
-      guideTitle: "小さな儀式",
-      step1: "静かなひととき",
-      step1Copy: "ゆっくり呼吸して、心をほどく",
-      step2: "心に問いを",
-      step2Copy: "言葉にせず、そっと思い浮かべる",
-      step3: "答えに出会う",
-      step3Copy: "ページを開き、心の響きを聴く",
-      footer: "答えはひとつのヒント。進む道を選ぶのは、あなた。",
-      closed: "本を閉じました。",
     },
   };
 
@@ -286,7 +225,7 @@
   }
   const audio = new SoundEngine();
 
-  // Shuffle once per cycle; all 120 answers appear before any are repeated.
+  // Shuffle once per cycle; all 365 answers appear before any are repeated.
   // Keep the first answer of a new cycle different from the previous answer.
   function nextAnswer() {
     if (!state.bag.length) {
@@ -321,14 +260,10 @@
     document
       .querySelectorAll("[data-i18n]")
       .forEach((element) => setMultiline(element, t[element.dataset.i18n]));
-    document.querySelectorAll(".lang-btn").forEach((button) => {
-      const active = button.dataset.lang === state.language;
-      button.classList.toggle("active", active);
-      button.setAttribute("aria-pressed", String(active));
-    });
-    document
-      .querySelector(".ritual-guide")
-      .setAttribute("aria-label", t.guideTitle);
+    $("languageToggle").textContent = state.language === "zh" ? "EN" : "中文";
+    $("languageToggle").lang = state.language === "zh" ? "en" : "zh-CN";
+    $("languageToggle").setAttribute("aria-label", t.switchLanguage);
+    $("languageToggle").title = t.switchLanguage;
     $("coverTitle").textContent = t.title;
     $("coverSubtitle").textContent = t.subtitle;
     $("actionLabel").textContent = busy
@@ -447,16 +382,13 @@
     if (state.phase === "open" && !event.target.closest("button"))
       void closeBook();
   });
-  document.querySelectorAll(".lang-btn").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (state.language === button.dataset.lang) return;
-      state.language = button.dataset.lang;
-      storage.set("book.language", state.language);
-      audio.click();
-      render();
-      if (state.phase === "open")
-        $("announcement").textContent = answers[state.index][state.language];
-    });
+  $("languageToggle").addEventListener("click", () => {
+    state.language = state.language === "zh" ? "en" : "zh";
+    storage.set("book.language", state.language);
+    audio.click();
+    render();
+    if (state.phase === "open")
+      $("announcement").textContent = answers[state.index][state.language];
   });
   $("soundToggle").addEventListener("click", () => {
     state.sound = !state.sound;

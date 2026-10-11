@@ -1,4 +1,5 @@
 """Browser regression checks. Run: python3 tests/smoke.py (requires Playwright + Chromium)."""
+from collections import Counter
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -54,13 +55,24 @@ class BookSmokeTests(unittest.TestCase):
     def wait_closed(self):
         self.page.wait_for_function("!document.getElementById('actionButton').disabled && document.getElementById('bookButton').getAttribute('aria-expanded') === 'false'")
 
+    def set_language(self, language):
+        html_lang = 'zh-CN' if language == 'zh' else 'en'
+        if self.page.locator('html').get_attribute('lang') != html_lang:
+            self.page.locator('#languageToggle').click()
+        self.assertEqual(self.page.locator('html').get_attribute('lang'), html_lang)
+
     def test_full_answer_cycle_and_translation_alignment(self):
         data = self.page.evaluate('window.BookAnswers')
-        self.assertEqual(len(data), 120)
-        for language in ['zh', 'en', 'ja']:
-            self.assertEqual(len({answer[language] for answer in data}), 120)
+        self.assertEqual(len(data), 365)
+        self.assertEqual(Counter(answer['sentiment'] for answer in data),
+                         {'positive': 133, 'negative': 114, 'neutral': 118})
+        for answer in data:
+            self.assertEqual(set(answer), {'zh', 'en', 'sentiment'})
+            self.assertTrue(answer['zh'].strip() and answer['en'].strip())
+        for language in ['zh', 'en']:
+            self.assertEqual(len({answer[language] for answer in data}), 365)
         seen = set()
-        for _ in range(120):
+        for _ in range(365):
             self.page.locator('#actionButton').click()
             self.wait_open()
             index = int(self.page.locator('#pageNumber').inner_text()) - 1
@@ -73,8 +85,8 @@ class BookSmokeTests(unittest.TestCase):
         self.wait_open()
         next_index = int(self.page.locator('#pageNumber').inner_text()) - 1
         self.assertNotEqual(index, next_index, 'No repeat at the cycle boundary')
-        for language, html_lang in [('en', 'en'), ('ja', 'ja'), ('zh', 'zh-CN')]:
-            self.page.locator(f'[data-lang="{language}"]').click()
+        for language, html_lang in [('en', 'en'), ('zh', 'zh-CN')]:
+            self.set_language(language)
             self.assertEqual(self.page.locator('html').get_attribute('lang'), html_lang)
             self.assertEqual(self.page.locator('#answerText').inner_text(), data[next_index][language])
             self.assertEqual(int(self.page.locator('#pageNumber').inner_text()) - 1, next_index)
@@ -88,7 +100,7 @@ class BookSmokeTests(unittest.TestCase):
         self.assertNotEqual(self.page.locator('#pageNumber').inner_text(), first)
         self.page.locator('#actionButton').press('Space')
         self.wait_closed()
-        self.page.locator('[data-lang="en"]').click()
+        self.set_language('en')
         self.page.locator('#soundToggle').press('Space')
         self.assertEqual(self.page.locator('#soundToggle').get_attribute('aria-pressed'), 'false')
         self.wait_closed()  # Space on controls must not also toggle the book.
@@ -99,8 +111,8 @@ class BookSmokeTests(unittest.TestCase):
     def test_responsive_layout_and_all_answer_lengths(self):
         for width, height in [(320,568), (375,812), (390,844), (768,1024), (1024,768), (1440,900), (1920,1080), (844,390)]:
             self.page.set_viewport_size({'width':width, 'height':height})
-            for language in ['zh', 'en', 'ja']:
-                self.page.locator(f'[data-lang="{language}"]').click()
+            for language in ['zh', 'en']:
+                self.set_language(language)
                 self.assertTrue(self.page.evaluate('document.documentElement.scrollWidth <= innerWidth'), (width,language,'horizontal overflow'))
                 self.page.locator('#actionButton').click()
                 self.wait_open()
@@ -141,7 +153,7 @@ class BookSmokeTests(unittest.TestCase):
         bounds = self.page.locator('#bookButton').bounding_box()
         self.page.mouse.click(bounds['x'] + bounds['width'] / 2, bounds['y'] + bounds['height'] / 2)
         self.assertTrue(self.page.locator('#actionButton').is_disabled())
-        self.page.locator('[data-lang="ja"]').click()
+        self.set_language('en')
         self.wait_open()
         self.assertGreater(self.page.evaluate('window.audioStarts'), 5)
         self.assertTrue(self.page.locator('#answerText').inner_text())
@@ -154,10 +166,25 @@ class BookSmokeTests(unittest.TestCase):
         self.assertEqual(self.page.evaluate('window.audioStarts'), before, 'Muted interactions schedule no sound')
         self.page.wait_for_function("document.querySelectorAll('.particle').length === 0")
 
+    def test_single_language_toggle_and_legacy_preference(self):
+        self.page.evaluate("localStorage.setItem('book.language', 'ja')")
+        self.page.reload()
+        self.assertEqual(self.page.locator('html').get_attribute('lang'), 'zh-CN')
+        toggle = self.page.locator('#languageToggle')
+        self.assertEqual(toggle.count(), 1)
+        self.assertEqual(toggle.inner_text(), 'EN')
+        toggle.press('Space')
+        self.assertEqual(self.page.locator('html').get_attribute('lang'), 'en')
+        self.assertEqual(toggle.inner_text(), '中文')
+        self.wait_closed()
+        toggle.press('Enter')
+        self.assertEqual(self.page.locator('html').get_attribute('lang'), 'zh-CN')
+        self.assertEqual(self.page.locator('.ritual-guide, .site-footer, .answer-footnote').count(), 0)
+
     def test_storage_unavailable(self):
         self.page.add_init_script("Storage.prototype.getItem = Storage.prototype.setItem = () => { throw new Error('storage disabled'); };")
         self.page.reload()
-        self.page.locator('[data-lang="en"]').click()
+        self.set_language('en')
         self.page.locator('#soundToggle').click()
         self.page.locator('#bookButton').click()
         self.wait_open()

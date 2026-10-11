@@ -7,9 +7,8 @@
   --gold: #c9af78;
   --gold-light: #eddbac;
   --line: rgba(205, 214, 185, 0.17);
-  --serif:
-    "Cormorant Garamond", "Noto Serif SC", "Noto Serif JP", Georgia, serif;
-  --body: "Noto Serif SC", "Noto Serif JP", Georgia, serif;
+  --serif: "Cormorant Garamond", "Noto Serif SC", Georgia, serif;
+  --body: "Noto Serif SC", Georgia, serif;
   --book-w: 292px;
   --book-h: 402px;
   --ease: cubic-bezier(0.22, 0.75, 0.2, 1);
@@ -111,8 +110,7 @@ a {
 }
 
 .site-header,
-main,
-.site-footer {
+main {
   width: min(1280px, calc(100% - 112px));
   margin-inline: auto;
 }
@@ -154,30 +152,6 @@ main,
   display: flex;
   align-items: center;
   gap: 20px;
-}
-
-.language-switcher {
-  display: flex;
-  gap: 3px;
-}
-
-.lang-btn {
-  width: 40px;
-  min-height: 42px;
-  background: transparent;
-  border-radius: 50%;
-  font: 12px var(--body);
-  color: var(--muted);
-}
-
-.lang-btn.active {
-  color: var(--gold-light);
-  background: #d9c49815;
-  box-shadow: inset 0 0 0 1px #d9c49840;
-}
-
-.lang-btn:hover {
-  color: var(--ink);
 }
 
 .tool-divider {
@@ -246,38 +220,6 @@ h1 {
   letter-spacing: 1.3px;
   color: var(--muted);
   margin: 0;
-}
-
-.intro-divider {
-  width: 45px;
-  height: 1px;
-  background: var(--line);
-  margin: 30px 0 22px;
-}
-
-.editorial-note {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #c4cdb7;
-  font-size: 11px;
-  letter-spacing: 0.6px;
-  line-height: 2;
-}
-
-.tiny-star {
-  font-size: 21px;
-  color: var(--gold);
-}
-
-.edition {
-  margin-top: 45px;
-  font: 10px var(--body);
-  letter-spacing: 1.3px;
-  color: #8da99c;
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
 .book-experience {
@@ -374,20 +316,6 @@ h1 {
   right: 17%;
   top: 12%;
   font-size: 28px;
-}
-
-.scene-caption {
-  position: absolute;
-  right: -18px;
-  top: 50%;
-  transform: rotate(90deg) translateX(50%);
-  transform-origin: right top;
-  color: #9db7a972;
-  font:
-    8px Georgia,
-    serif;
-  letter-spacing: 3px;
-  white-space: nowrap;
 }
 
 .book-float {
@@ -584,30 +512,6 @@ h1 {
   margin: 19px 0 14px;
 }
 
-.cover-motto {
-  font-size: 9px;
-  letter-spacing: 2px;
-  margin: 0;
-  color: #c9bb95;
-}
-
-.cover-bottom {
-  margin-top: auto;
-  font:
-    6px Georgia,
-    serif;
-  letter-spacing: 1.8px;
-  color: #ad9e7b;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-top: 15px;
-}
-
-.cover-bottom span {
-  font-size: 10px;
-}
-
 .ribbon {
   position: absolute;
   right: 30px;
@@ -728,14 +632,6 @@ h1 {
   padding: 0 9px;
   font-size: 9px;
   background: #f0e6cd;
-}
-
-.answer-footnote {
-  font-size: 9px;
-  color: #8c8264;
-  letter-spacing: 0.7px;
-  margin: 0;
-  line-height: 1.8;
 }
 
 .turning-leaf {
@@ -904,80 +800,6 @@ kbd {
   display: none;
 }
 
-.ritual-guide {
-  border-block: 1px solid var(--line);
-  padding: 30px 0;
-  display: grid;
-  grid-template-columns: 0.85fr repeat(3, 1fr);
-  gap: 25px;
-  align-items: center;
-}
-
-.guide-heading {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--gold);
-  font-size: 12px;
-  letter-spacing: 1px;
-}
-
-.guide-heading svg {
-  width: 25px;
-  height: 25px;
-}
-
-.guide-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.step-number {
-  font: italic 22px var(--serif);
-  color: #b7ac8099;
-  margin-top: -3px;
-}
-
-.guide-step h3 {
-  font-weight: 400;
-  font-size: 12px;
-  letter-spacing: 1.6px;
-  margin: 0 0 8px;
-}
-
-.guide-step p {
-  font-size: 10px;
-  letter-spacing: 0.3px;
-  line-height: 1.8;
-  color: #9cb4a6;
-  margin: 0;
-}
-
-.site-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  padding: 24px 0 28px;
-  font-size: 9px;
-  color: #8da89a;
-  letter-spacing: 0.8px;
-  line-height: 1.8;
-}
-
-.footer-signature {
-  font:
-    8px Georgia,
-    serif;
-  letter-spacing: 1.6px;
-}
-
-.footer-signature span {
-  color: var(--gold);
-  margin-left: 12px;
-}
-
 .noscript {
   text-align: center;
   padding: 20px;
@@ -1003,21 +825,6 @@ html[lang="en"] .cover-subtitle {
 html[lang="en"] .answer-text {
   font: 30px/1.25 var(--serif);
   letter-spacing: 0;
-}
-
-html[lang="en"] .cover-motto {
-  font: italic 12px var(--serif);
-  letter-spacing: 0.2px;
-}
-
-html[lang="ja"] .answer-text {
-  font-size: 21px;
-  letter-spacing: 1px;
-}
-
-html[lang="ja"] h1 {
-  font-size: clamp(30px, 3.4vw, 46px);
-  letter-spacing: 2px;
 }
 
 @keyframes float {
@@ -1083,8 +890,7 @@ html[lang="ja"] h1 {
 
 @media (max-width: 1100px) {
   .site-header,
-  main,
-  .site-footer {
+  main {
     width: calc(100% - 64px);
   }
   .intro {
@@ -1101,16 +907,6 @@ html[lang="ja"] h1 {
     width: 410px;
     height: 410px;
   }
-  .scene-caption {
-    display: none;
-  }
-  .ritual-guide {
-    gap: 15px;
-    grid-template-columns: 0.8fr repeat(3, 1fr);
-  }
-  .guide-step {
-    gap: 10px;
-  }
 }
 
 @media (max-width: 760px) {
@@ -1119,8 +915,7 @@ html[lang="ja"] h1 {
     --book-h: 368px;
   }
   .site-header,
-  main,
-  .site-footer {
+  main {
     width: calc(100% - 40px);
   }
   .site-header {
@@ -1145,11 +940,6 @@ html[lang="ja"] h1 {
   .sound-toggle span,
   .tool-divider {
     display: none;
-  }
-  .lang-btn {
-    width: 34px;
-    min-height: 38px;
-    font-size: 11px;
   }
   .sound-toggle {
     min-width: 38px;
@@ -1187,11 +977,6 @@ html[lang="ja"] h1 {
     font-size: 11px;
     line-height: 2;
     letter-spacing: 0.5px;
-  }
-  .intro-divider,
-  .editorial-note,
-  .edition {
-    display: none;
   }
   .scene {
     height: 438px;
@@ -1237,9 +1022,6 @@ html[lang="ja"] h1 {
   .cover-line {
     margin: 16px 0 13px;
   }
-  .cover-motto {
-    font-size: 8px;
-  }
   .answer-page {
     padding: 25px 25px 21px 29px;
   }
@@ -1272,49 +1054,6 @@ html[lang="ja"] h1 {
     letter-spacing: 0.6px;
     margin: 14px 0 0;
   }
-  .ritual-guide {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 19px 15px;
-    padding: 23px 0;
-  }
-  .guide-heading {
-    grid-column: 1/-1;
-    justify-content: center;
-    font-size: 11px;
-    margin-bottom: 5px;
-  }
-  .guide-heading svg {
-    width: 19px;
-    height: 19px;
-  }
-  .guide-step {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 9px;
-  }
-  .step-number {
-    font-size: 21px;
-  }
-  .guide-step h3 {
-    font-size: 11px;
-    letter-spacing: 0;
-  }
-  .guide-step p {
-    font-size: 9px;
-    line-height: 1.9;
-    max-width: 110px;
-  }
-  .site-footer {
-    padding: 22px 0;
-    flex-direction: column;
-    gap: 12px;
-    text-align: center;
-    font-size: 9px;
-  }
-  .footer-signature {
-    font-size: 7px;
-  }
   html[lang="en"] h1 {
     font-size: 38px;
     max-width: 420px;
@@ -1323,21 +1062,11 @@ html[lang="ja"] h1 {
   html[lang="en"] h1 br {
     display: initial;
   }
-  html[lang="ja"] h1 {
-    font-size: 27px;
-  }
-  html[lang="ja"] h1 br {
-    display: initial;
-  }
-  html[lang="ja"] .answer-text {
-    font-size: 19px;
-  }
 }
 
 @media (max-width: 390px) {
   .site-header,
-  main,
-  .site-footer {
+  main {
     width: calc(100% - 28px);
   }
   .brand {
@@ -1353,12 +1082,6 @@ html[lang="ja"] h1 {
   }
   .header-tools {
     gap: 4px;
-  }
-  .language-switcher {
-    gap: 0;
-  }
-  .lang-btn {
-    width: 30px;
   }
   .sound-toggle {
     min-width: 32px;
@@ -1422,5 +1145,30 @@ html[lang="ja"] h1 {
   .particles,
   .turning-leaf {
     display: none;
+  }
+}
+
+.language-toggle {
+  min-width: 52px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #d9c49840;
+  border-radius: 22px;
+  background: #d9c49815;
+  color: var(--gold-light);
+  font: 12px var(--body);
+}
+.language-toggle:hover {
+  background: #d9c4982b;
+}
+.page-bottomline {
+  justify-content: flex-end;
+}
+.cover {
+  justify-content: center;
+}
+@media (min-width: 761px) {
+  .experience {
+    min-height: max(690px, calc(100svh - 105px));
   }
 }

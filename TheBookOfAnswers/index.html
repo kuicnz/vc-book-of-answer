@@ -9,13 +9,13 @@
     <meta name="theme-color" content="#153e38" />
     <meta
       name="description"
-      content="慢下来，听听心里的声音。一本属于你的答案之书，收录中、英、日三语灵感。"
+      content="慢下来，听听心里的声音。一本属于你的答案之书，收录 365 条中英双语答案。"
     />
     <title>答案之书 · The Book of Answers</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@400;500;600&family=Noto+Serif+JP:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+SC:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
@@ -52,32 +52,15 @@
         ><span>THE BOOK <i>of</i> ANSWERS</span></a
       >
       <div class="header-tools">
-        <div class="language-switcher" role="group" aria-label="Language">
-          <button
-            class="lang-btn active"
-            data-lang="zh"
-            lang="zh-CN"
-            aria-pressed="true"
-          >
-            中
-          </button>
-          <button
-            class="lang-btn"
-            data-lang="en"
-            lang="en"
-            aria-pressed="false"
-          >
-            EN
-          </button>
-          <button
-            class="lang-btn"
-            data-lang="ja"
-            lang="ja"
-            aria-pressed="false"
-          >
-            日
-          </button>
-        </div>
+        <button
+          class="language-toggle"
+          id="languageToggle"
+          lang="en"
+          aria-label="切换到英文"
+          title="切换到英文"
+        >
+          EN
+        </button>
         <span class="tool-divider" aria-hidden="true"></span>
         <button
           class="sound-toggle"
@@ -103,15 +86,6 @@
           <p class="intro-copy" data-i18n="intro">
             有些犹豫，不必急着解开。<br />让心安静下来，带着问题翻开这一页。
           </p>
-          <div class="intro-divider" aria-hidden="true"></div>
-          <p class="editorial-note">
-            <span class="tiny-star" aria-hidden="true">✧</span
-            ><span data-i18n="note">一次偶然的相遇，一点刚好的启发。</span>
-          </p>
-          <p class="edition">
-            VOL. 01 <span>—</span>
-            <span data-i18n="edition">写给每一个正在寻找的你</span>
-          </p>
         </div>
         <div class="book-experience">
           <div class="scene" id="scene">
@@ -120,9 +94,6 @@
             <span class="orbit-star star-one" aria-hidden="true">✦</span
             ><span class="orbit-star star-two" aria-hidden="true">✧</span
             ><span class="orbit-star star-three" aria-hidden="true">·</span>
-            <span class="scene-caption" aria-hidden="true"
-              >LET THE UNIVERSE WHISPER</span
-            >
             <div class="book-float">
               <div class="book" id="book">
                 <div class="book-pages" aria-hidden="true"></div>
@@ -140,13 +111,9 @@
                     <div class="answer-rule" aria-hidden="true">
                       <span>✦</span>
                     </div>
-                    <p class="answer-footnote" data-i18n="answerNote">
-                      把这一句，轻轻放在心上。
-                    </p>
                   </div>
                   <div class="page-bottomline">
-                    <span>THE BOOK OF ANSWERS</span
-                    ><span id="pageNumber">001</span>
+                    <span id="pageNumber">001</span>
                   </div>
                 </div>
                 <div class="turning-leaf leaf-one" aria-hidden="true"></div>
@@ -183,12 +150,6 @@
                     The Book of Answers
                   </p>
                   <span class="cover-line" aria-hidden="true"></span>
-                  <p class="cover-motto" data-i18n="coverMotto">
-                    你寻找的，终会与你相遇
-                  </p>
-                  <span class="cover-bottom"
-                    >EST. IN YOUR HEART <span>✦</span></span
-                  >
                 </div>
                 <span class="ribbon" aria-hidden="true"></span>
                 <button
@@ -228,40 +189,7 @@
           ></p>
         </div>
       </section>
-      <section class="ritual-guide" aria-label="使用方式">
-        <div class="guide-heading">
-          <svg aria-hidden="true"><use href="#star" /></svg
-          ><span data-i18n="guideTitle">一个小小的仪式</span>
-        </div>
-        <div class="guide-step">
-          <span class="step-number">01</span>
-          <div>
-            <h3 data-i18n="step1">安静片刻</h3>
-            <p data-i18n="step1Copy">放慢呼吸，让纷扰暂时离开</p>
-          </div>
-        </div>
-        <div class="guide-step">
-          <span class="step-number">02</span>
-          <div>
-            <h3 data-i18n="step2">心有所问</h3>
-            <p data-i18n="step2Copy">想着一个问题，不用说出口</p>
-          </div>
-        </div>
-        <div class="guide-step">
-          <span class="step-number">03</span>
-          <div>
-            <h3 data-i18n="step3">与答案相遇</h3>
-            <p data-i18n="step3Copy">轻轻翻开，听见心里的回响</p>
-          </div>
-        </div>
-      </section>
     </main>
-    <footer class="site-footer">
-      <span data-i18n="footer">答案是灵感，而你的选择，才是方向。</span
-      ><span class="footer-signature"
-        >MADE FOR THE WANDERING SOUL <span>✧</span></span
-      >
-    </footer>
     <noscript
       ><p class="noscript">
         请启用 JavaScript 来翻开答案之书。Please enable JavaScript to open the
